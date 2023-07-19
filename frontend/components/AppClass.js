@@ -4,8 +4,9 @@ import React from 'react'
 const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
-const initialIndex = 4 // the index the "B" is at
-
+const initialIndex = 4 // the index the "B" is at; [0,1,2,
+//                                                  3,4,5,
+//                                                  6,7,8]
 const initialState = {
   message: initialMessage,
   email: initialEmail,
@@ -16,23 +17,83 @@ const initialState = {
 export default class AppClass extends React.Component {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
+  constructor(){
+    super();
+    this.state = {
+      message: initialMessage,
+      email: initialEmail,
+      index: initialIndex,
+      steps: initialSteps,
+    }
+  }
 
   getXY = () => {
-    // It it not necessary to have a state to track the coordinates.
+    let x = 2;
+    let y = 2;
+
+    if(this.state.index % 3 === 0){
+      x = 1;
+      if(this.state.index === 0 || this.state.index === 1 || this.state.index === 2){
+        y = 1;
+      }
+      if(this.state.index === 3 || this.state.index === 4 || this.state.index === 5){
+        y = 2;
+      }
+      if(this.state.index === 6 || this.state.index === 7 || this.state.index === 8){
+        y = 3;
+      }
+    }
+    if(this.state.index === 1 || this.state.index === 4 || this.state.index === 7){
+      x = 2;
+      if(this.state.index === 0 || this.state.index === 1 || this.state.index === 2){
+        y = 1;
+      }
+      if(this.state.index === 3 || this.state.index === 4 || this.state.index === 5){
+        y = 2;
+      }
+      if(this.state.index === 6 || this.state.index === 7 || this.state.index === 8){
+        y = 3;
+      }
+    }
+    if(this.state.index === 8 || this.state.index === 5 || this.state.index === 2){
+      x = 3;
+      if(this.state.index === 0 || this.state.index === 1 || this.state.index === 2){
+        y = 1;
+      }
+      if(this.state.index === 3 || this.state.index === 4 || this.state.index === 5){
+        y = 2;
+      }
+      if(this.state.index === 6 || this.state.index === 7 || this.state.index === 8){
+        y = 3;
+      }
+    }
+
+    let XY = `(${x}, ${y})`;
+    console.log(XY);
+    return XY;
+    // It is not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
   }
 
   getXYMessage = () => {
+    return `Coordinates ${this.getXY()}`;
+
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
     // returns the fully constructed string.
   }
 
   reset = () => {
+    this.setState({...initialState});
     // Use this helper to reset all states to their initial values.
   }
 
   getNextIndex = (direction) => {
+    if(direction == 'left'){
+      if(x > 1){
+        
+      }
+    }
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
@@ -56,7 +117,7 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">Coordinates (2, 2)</h3>
+          <h3 id="coordinates">{this.getXYMessage()}</h3>
           <h3 id="steps">You moved 0 times</h3>
         </div>
         <div id="grid">
