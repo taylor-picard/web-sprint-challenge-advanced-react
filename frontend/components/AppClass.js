@@ -24,12 +24,12 @@ export default class AppClass extends React.Component {
       email: initialEmail,
       index: initialIndex,
       steps: initialSteps,
+      
     }
   }
 
   getXY = () => {
-    let x = 2;
-    let y = 2;
+    
 
     if(this.state.index % 3 === 0){
       x = 1;
@@ -90,8 +90,11 @@ export default class AppClass extends React.Component {
 
   getNextIndex = (direction) => {
     if(direction == 'left'){
-      if(x > 1){
+      if(x > 1 || x < 3){
         
+      }
+      if(x === 1 || x === 3){
+
       }
     }
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
@@ -118,7 +121,7 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">{this.getXYMessage()}</h3>
-          <h3 id="steps">You moved 0 times</h3>
+          <h3 id="steps">(Count here)</h3>
         </div>
         <div id="grid">
           {
