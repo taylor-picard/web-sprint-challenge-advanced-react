@@ -58,9 +58,9 @@ Study its functionality and also inspect the Console, the Network tab and the El
 - The coordinates of each square of the grid are as follows:
 
   ```js
-    (1, 1) (2, 1) (3, 1)
-    (1, 2) (2, 2) (3, 2)
-    (1, 3) (2, 3) (3, 3)
+    (1, 1) (2, 1) (3, 1)        [0, 1, 2,
+    (1, 2) (2, 2) (3, 2)         3, 4, 5,
+    (1, 3) (2, 3) (3, 3)         6, 7, 8]
   ```
 
 ❗ ALL TESTS MUST PASS
