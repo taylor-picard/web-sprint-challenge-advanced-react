@@ -16,10 +16,11 @@ test('renders header', ()=> {
 
 test('renders no email error message', async()=> {
   render(<AppClass/>);
-  fireEvent.click(document.querySelector('#submit'));
+  const submit = document.querySelector('#submit');
+  fireEvent.click(submit);
   const message = document.querySelector('#message');
   await waitFor(()=> {
-    expect(message.textContent).toMatch(/Ouch: email is required/i);
+    expect(message.textContent).toMatch("Ouch: email is required");
   })
   
 })
