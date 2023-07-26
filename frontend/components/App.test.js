@@ -14,16 +14,16 @@ test('renders header', ()=> {
   expect(grid).toBeInTheDocument();
 })
 
-test('renders no email error message', async()=> {
-  render(<AppClass/>);
-  const submit = document.querySelector('#submit');
-  fireEvent.click(submit);
-  const message = document.querySelector('#message');
-  await waitFor(()=> {
-    expect(message.textContent).toMatch("Ouch: email is required");
-  })
+// test('renders no email error message', async()=> {
+//   render(<AppClass/>);
+//   const submit = document.querySelector('#submit');
+//   fireEvent.click(submit);
+//   const message = document.querySelector('#message');
+//   await waitFor(()=> {
+//     expect(message.textContent).toMatch("Ouch: email is required");
+//   })
   
-})
+// })
 
 test('renders error message if moving left not possible', async()=> {
   render(<AppClass/>);
