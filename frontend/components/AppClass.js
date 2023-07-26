@@ -73,7 +73,6 @@ export default class AppClass extends React.Component {
       }else{
         this.move(this.state.index - 1);
       }
-
     }
     if(direction == 'right'){
       if(this.state.index === 8 || this.state.index === 5 || this.state.index === 2){
@@ -124,14 +123,14 @@ export default class AppClass extends React.Component {
       email: this.state.email
     })
       .then(res => {
-        this.setState({...this.state, message: res.data.message});
+        this.setState({...this.state, message: res.data.message, email: ''});
         
       })
       .catch(err => {
         this.setState({...this.state, message: err.response.data.message})
       })
     
-    this.reset();
+    
     // Use a POST request to send a payload to the server.
   }
 
