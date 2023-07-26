@@ -6,8 +6,6 @@ const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 
-const initialX = 2
-const initialY = 2
 // the index the "B" is at; [0,1,2,
 //                           3,4,5,
 //                           6,7,8]
@@ -16,8 +14,6 @@ const initialState = {
   email: initialEmail,
   index: initialIndex,
   steps: initialSteps,
-  x: initialX,
-  y: initialY,
 }
 
 export default class AppClass extends React.Component {
@@ -25,17 +21,10 @@ export default class AppClass extends React.Component {
   // You can delete them and build your own logic from scratch.
   constructor(){
     super();
-    this.state = {
-      message: initialMessage,
-      email: initialEmail,
-      index: initialIndex,
-      steps: initialSteps,
-      x: initialX,
-      y: initialY,
-    }
+    this.state = initialState;
   }
-
   getXY = () => {
+    
     let x = 2;
     let y = 2;
 
@@ -51,21 +40,21 @@ export default class AppClass extends React.Component {
     if(this.state.index < 3){
       y = 1;
       }
-    if(this.state.index > 5){
+    else if(this.state.index > 5){
       y = 3;
     }else{
       y = 2;
     }
 
-    // this.setState({...this.state, x: x, y: y});
 
-    return `(${x}, ${y})`;
+    return [x, y];
     // It is not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
   }
 
   getXYMessage = () => {
-    return `Coordinates ${this.getXY()}`;
+    const [x, y] = this.getXY();
+    return `Coordinates (${x}, ${y})`;
 
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
     // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
@@ -78,46 +67,43 @@ export default class AppClass extends React.Component {
   }
 
   getNextIndex = (direction) => {
-    let nextIndex = 4
     if(direction == 'left'){
       if(this.state.index % 3 === 0){
-        nextIndex = this.state.index;
+        this.setState({...this.state, message: `You can't go left`});
       }else{
-        nextIndex = this.state.index - 1;
+        this.move(this.state.index - 1);
       }
+
     }
     if(direction == 'right'){
       if(this.state.index === 8 || this.state.index === 5 || this.state.index === 2){
-        nextIndex = this.state.index;
+        this.setState({...this.state, message: `You can't go right`});
       }else{
-        nextIndex = this.state.index + 1;
+        this.move(this.state.index + 1);
       }
     }
     if(direction == 'up'){
       if(this.state.index < 3){
-        nextIndex = this.state.index;
+        this.setState({...this.state, message: `You can't go up`});
       }else{
-        nextIndex = this.state.index - 3;
+        this.move(this.state.index - 3);
       }
     }
     if(direction == 'down'){
       if(this.state.index > 5){
-        nextIndex = this.state.index;
+        this.setState({...this.state, message: `You can't go down`});
       }else{
-        nextIndex = this.state.index + 3;
+        this.move(this.state.index + 3);
       }
     }
-    
-    return nextIndex;
 
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
   }
 
-  move = (evt) => {
-    this.setState({...this.state, index: this.getNextIndex(evt.target.id), steps: this.state.steps + 1});
-
+  move = newIndex => {
+    this.setState({...this.state, index: newIndex, message: '', steps: this.state.steps + 1});
     // This event handler can use the helper above to obtain a new index for the "B",
     // and change any states accordingly.
   }
@@ -130,18 +116,22 @@ export default class AppClass extends React.Component {
 
   onSubmit = (evt) => {
     evt.preventDefault();
+    const [x, y] = this.getXY();
     axios.post("http://localhost:9000/api/result", {
-      x: this.state.x, 
-      y: this.state.y, 
+      x: x, 
+      y: y, 
       steps: this.state.steps, 
       email: this.state.email
     })
       .then(res => {
-        console.log(res);
-        this.reset();
+        this.setState({...this.state, message: res.data.message});
+        
       })
-      .catch(err => console.log(err))
-
+      .catch(err => {
+        this.setState({...this.state, message: err.response.data.message})
+      })
+    
+    this.reset();
     // Use a POST request to send a payload to the server.
   }
 
@@ -151,7 +141,7 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">{this.getXYMessage()}</h3>
-          <h3 id="steps">{this.state.steps}</h3>
+          <h3 id="steps">You moved {this.state.steps} {this.state.steps === 1 ? 'time' : 'times'}</h3>
         </div>
         <div id="grid">
           {
@@ -163,13 +153,13 @@ export default class AppClass extends React.Component {
           }
         </div>
         <div className="info">
-          <h3 id="message"></h3>
+          <h3 id="message">{this.state.message}</h3>
         </div>
         <div id="keypad">
-          <button id="left" onClick={this.move}>LEFT</button>
-          <button id="up" onClick={this.move}>UP</button>
-          <button id="right" onClick={this.move}>RIGHT</button>
-          <button id="down" onClick={this.move}>DOWN</button>
+          <button id="left" onClick={()=>this.getNextIndex('left')}>LEFT</button>
+          <button id="up" onClick={()=>this.getNextIndex('up')}>UP</button>
+          <button id="right" onClick={()=>this.getNextIndex('right')}>RIGHT</button>
+          <button id="down" onClick={()=>this.getNextIndex('down')}>DOWN</button>
           <button id="reset" onClick={this.reset}>reset</button>
         </div>
         <form onSubmit={this.onSubmit}>
